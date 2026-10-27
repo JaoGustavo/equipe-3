@@ -341,7 +341,7 @@ def cadastrar_usuario():
         nome = input("Digite o nome do usuario: ")
         email = input("Digite o email: ")
         senha = input("Digite a senha: ")
-        tipo = input("Digite o tipo do usuario: ")
+        tipo = input("Digite o tipo do usuario (Admin / Recepcionista): ")
 
         conexao = sqlite3.connect("hotel_center.db")
         cursor = conexao.cursor()
@@ -389,22 +389,18 @@ def cadastrar_reserva():
         listar_hospedes()
 
         id_hospede = int(
-            input("Digite o ID do hospede: ")
-        )
+            input("Digite o ID do hospede: "))
 
         listar_quartos_disponiveis()
 
         id_quarto = int(
-            input("Digite o ID do quarto: ")
-        )
+            input("Digite o ID do quarto: "))
 
         check_in = input(
-            "Digite a data de check-in: "
-        )
+            "Digite a data de check-in: ")
 
         check_out = input(
-            "Digite a data de check-out: "
-        )
+            "Digite a data de check-out: ")
 
         if check_in == check_out:
             print("Erro: o check-out deve ser depois do check-in")
@@ -414,9 +410,7 @@ def cadastrar_reserva():
         cursor = conexao.cursor()
 
         cursor.execute(
-            "SELECT * FROM quartos WHERE id = ?",
-            (id_quarto,)
-        )
+            "SELECT * FROM quartos WHERE id = ?",(id_quarto,))
 
         quarto = cursor.fetchone()
 
@@ -431,9 +425,7 @@ def cadastrar_reserva():
             return
 
         cursor.execute(
-            "SELECT * FROM reservas WHERE id_quarto = ? AND status = 'Ativa'",
-            (id_quarto,)
-        )
+            "SELECT * FROM reservas WHERE id_quarto = ? AND status = 'Ativa'",(id_quarto,))
 
         reserva = cursor.fetchone()
 
@@ -444,9 +436,7 @@ def cadastrar_reserva():
 
         desconto = 0
 
-        dias = int(
-            input("Digite a quantidade de dias da reserva: ")
-        )
+        dias = int(input("Digite a quantidade de dias da reserva: "))
 
         if dias >= 7:
             desconto = 15
@@ -478,7 +468,7 @@ def cadastrar_reserva():
         print("Reserva realizada com sucesso")
 
         if desconto == 15:
-            print("Desconto de 15% aplicado")
+            print(f"Desconto de {desconto} 15% aplicado")
 
     except ValueError:
         print("Digite os valores corretamente")
@@ -529,17 +519,12 @@ def cancelar_reserva():
     try:
         listar_reservas()
 
-        id_reserva = int(
-            input("Digite o ID da reserva: ")
-        )
+        id_reserva = int(input("Digite o ID da reserva: "))
 
         conexao = sqlite3.connect("hotel_center.db")
         cursor = conexao.cursor()
 
-        cursor.execute(
-            "SELECT id_quarto FROM reservas WHERE id = ?",
-            (id_reserva,)
-        )
+        cursor.execute( "SELECT id_quarto FROM reservas WHERE id = ?",(id_reserva,) )
 
         reserva = cursor.fetchone()
 
@@ -550,10 +535,7 @@ def cancelar_reserva():
 
         id_quarto = reserva[0]
 
-        cursor.execute(
-            "UPDATE reservas SET status = 'Cancelada' WHERE id = ?",
-            (id_reserva,)
-        )
+        cursor.execute("UPDATE reservas SET status = 'Cancelada' WHERE id = ?",(id_reserva,))
 
         cursor.execute(
             "UPDATE quartos SET status = 'Disponivel' WHERE id = ?",
@@ -710,7 +692,6 @@ def gerar_conta():
             SELECT
                 servicos.nome,
                 servicos.valor,
-                consumos.quantidade
             FROM consumos
             JOIN servicos
             ON consumos.id_servico = servicos.id
